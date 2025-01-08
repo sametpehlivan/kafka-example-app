@@ -1,5 +1,6 @@
 package com.sametp.kafka_example.consumer;
 
+import com.sametp.kafka_example.model.CustomEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -11,14 +12,14 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class KafkaConsumer implements Receiver<String,String> {
+public class KafkaConsumer implements Receiver<String, CustomEvent> {
     @KafkaListener(
-            id =  "${broker.group-id}",
+            groupId =  "${broker.group-id}",
             topics = {"${broker.topic.name}"}
     )
     public void receive(
             @Header(value = KafkaHeaders.RECEIVED_KEY, defaultValue = "null") String key,
-            @Payload String message,
+            @Payload CustomEvent message,
             @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partition,
             @Header(KafkaHeaders.OFFSET) Long offset
     ) {
