@@ -1,0 +1,35 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper_c
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+    networks:
+      - kafka-demo-net
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka_c
+    ports:
+      - "9093:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper_c:2181  # Zookeeper bağlantı bilgisi
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL # Internal ve external bağlantılar için listener ayarları
+      KAFKA_LISTENERS: PLAINTEXT://kafka_c:9092,INTERNAL://kafka_c:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9093,INTERNAL://kafka_c:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT # Listener protokol eşlemeleri
+      # örnek ms_kafka bash -> kafka-topics --list --bootstrap-server ms_kafka:29092
+    networks:
+      - kafka-demo-net
+networks:
+  kafka-demo-net:
+    driver: bridge
