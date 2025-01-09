@@ -8,8 +8,13 @@ spring:
       bootstrap-servers: localhost:9093
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.sametp.*
 broker:
   topic:
-    name: test-topic
+    name: wikimedia-topic
   group-id: consumer-group-1

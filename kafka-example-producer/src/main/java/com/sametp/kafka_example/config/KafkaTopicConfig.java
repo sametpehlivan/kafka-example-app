@@ -15,7 +15,7 @@ public class KafkaTopicConfig {
         this.topicName = topicName;
     }
     @Bean
-    public NewTopic testTopic(){
+    public NewTopic topic(){
         return TopicBuilder
                 .name(topicName)
                 .partitions(1)
